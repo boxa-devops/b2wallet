@@ -1,0 +1,34 @@
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'b2wallet'
+      MYSQL_USER: 'test'
+      MYSQL_PASSWORD: 'test'
+      MYSQL_ROOT_PASSWORD: 'test'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: b2wallet:latest
+    container_name: b2wallet
+    volumes:
+      - ./b2wallet:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=b2wallet.settings
+      - DEBUG=0
+    depends_on:
+      - db
+
+
+volumes:
+  my-db:
